@@ -6,15 +6,16 @@
 # Source0 file verified with key 0x27D6E89D63C42919 (mmericke@gmail.com)
 #
 Name     : pypi-hupper
-Version  : 1.11
-Release  : 1
-URL      : https://files.pythonhosted.org/packages/61/c0/11cb2e672162c3ea8b2ed227299fff22ff1ca08dd3f78c9bc6f1d44a162a/hupper-1.11.tar.gz
-Source0  : https://files.pythonhosted.org/packages/61/c0/11cb2e672162c3ea8b2ed227299fff22ff1ca08dd3f78c9bc6f1d44a162a/hupper-1.11.tar.gz
-Source1  : https://files.pythonhosted.org/packages/61/c0/11cb2e672162c3ea8b2ed227299fff22ff1ca08dd3f78c9bc6f1d44a162a/hupper-1.11.tar.gz.asc
+Version  : 1.12
+Release  : 2
+URL      : https://files.pythonhosted.org/packages/42/3d/70bef845298bb4746b94418efde81bcfe0fad479169c2e9649f95630bfa7/hupper-1.12.tar.gz
+Source0  : https://files.pythonhosted.org/packages/42/3d/70bef845298bb4746b94418efde81bcfe0fad479169c2e9649f95630bfa7/hupper-1.12.tar.gz
+Source1  : https://files.pythonhosted.org/packages/42/3d/70bef845298bb4746b94418efde81bcfe0fad479169c2e9649f95630bfa7/hupper-1.12.tar.gz.asc
 Summary  : Integrated process monitor for developing and reloading daemons.
 Group    : Development/Tools
 License  : MIT
 Requires: pypi-hupper-bin = %{version}-%{release}
+Requires: pypi-hupper-license = %{version}-%{release}
 Requires: pypi-hupper-python = %{version}-%{release}
 Requires: pypi-hupper-python3 = %{version}-%{release}
 BuildRequires : buildreq-distutils3
@@ -37,9 +38,18 @@ hupper
 %package bin
 Summary: bin components for the pypi-hupper package.
 Group: Binaries
+Requires: pypi-hupper-license = %{version}-%{release}
 
 %description bin
 bin components for the pypi-hupper package.
+
+
+%package license
+Summary: license components for the pypi-hupper package.
+Group: Default
+
+%description license
+license components for the pypi-hupper package.
 
 
 %package python
@@ -62,10 +72,10 @@ python3 components for the pypi-hupper package.
 
 
 %prep
-%setup -q -n hupper-1.11
-cd %{_builddir}/hupper-1.11
+%setup -q -n hupper-1.12
+cd %{_builddir}/hupper-1.12
 pushd ..
-cp -a hupper-1.11 buildavx2
+cp -a hupper-1.12 buildavx2
 popd
 
 %build
@@ -73,7 +83,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1680186957
+export SOURCE_DATE_EPOCH=1680551364
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -97,6 +107,8 @@ popd
 %install
 export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/pypi-hupper
+cp %{_builddir}/hupper-%{version}/LICENSE.txt %{buildroot}/usr/share/package-licenses/pypi-hupper/679248b19db87c5d83cbf1899f7320e1025d135c || :
 pip install --root=%{buildroot} --no-deps --ignore-installed dist/*.whl
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
@@ -117,6 +129,10 @@ popd
 %files bin
 %defattr(-,root,root,-)
 /usr/bin/hupper
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/pypi-hupper/679248b19db87c5d83cbf1899f7320e1025d135c
 
 %files python
 %defattr(-,root,root,-)
